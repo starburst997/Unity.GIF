@@ -1,4 +1,4 @@
-//#define mgGIF_UNSAFE
+#define mgGIF_UNSAFE
 
 using UnityEngine;
 using System;
@@ -315,6 +315,7 @@ namespace MG.GIF
             ReadByte();                             // block size (0x04)
             var flags = (ControlFlags) ReadByte();  // flags
             Image.Delay = ReadUInt16() * 10;        // delay (1/100th -> milliseconds)
+            
             var transparentColour = ReadByte();     // transparent colour
             ReadByte();                             // terminator (0x00)
 
