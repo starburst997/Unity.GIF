@@ -1,5 +1,6 @@
 {
-    "name": "MG.GIF",
+    "name": "Unity.GIF",
+    "rootNamespace": "jd.boivin.unity.gif",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

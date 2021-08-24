@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Runtime.InteropServices; // unsafe
 
-namespace MG.GIF
+namespace jd.boivin.unity.gif
 {
     public class Image : ICloneable
     {
@@ -104,8 +104,8 @@ namespace MG.GIF
         int         D;
 
         // colour table
-        readonly Color32[] GlobalColourTable;
-        readonly Color32[] LocalColourTable;
+        readonly Color32[] GlobalColourTable = new Color32[ 256 ];
+        readonly Color32[] LocalColourTable = new Color32[ 256 ];
         Color32[]   ActiveColourTable;
         ushort      TransparentIndex;
 
@@ -132,8 +132,8 @@ namespace MG.GIF
             Input             = data;
             D                 = 0;
 
-            GlobalColourTable = new Color32[ 256 ];
-            LocalColourTable  = new Color32[ 256 ];
+            //GlobalColourTable = new Color32[ 256 ];
+            //LocalColourTable  = new Color32[ 256 ];
             TransparentIndex  = NoTransparency;
             Output            = null;
             PreviousImage     = null;

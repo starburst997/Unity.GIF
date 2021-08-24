@@ -1,7 +1,7 @@
 {
-  "name": "com.gwaredd.mggif",
+  "name": "jd.boivin.unity.gif",
   "version": "1.1.0",
-  "displayName": "mgGIF",
+  "displayName": "GIF",
   "description": "Library for extracting frames from animated gif images",
   "license": "MIT",
   "unity": "2018.4",
