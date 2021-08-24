@@ -8,8 +8,6 @@ using System.Runtime.InteropServices; // unsafe
 
 namespace MG.GIF
 {
-    ////////////////////////////////////////////////////////////////////////////////
-
     public class Image : ICloneable
     {
         public int       Width;
@@ -49,8 +47,6 @@ namespace MG.GIF
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-
 #if mgGIF_UNSAFE
     unsafe
 #endif
@@ -60,10 +56,6 @@ namespace MG.GIF
         public ushort  Width;
         public ushort  Height;
         public Color32 BackgroundColour;
-
-
-        //------------------------------------------------------------------------------
-        // GIF format enums
 
         [Flags]
         enum ImageFlag
@@ -104,9 +96,6 @@ namespace MG.GIF
             DisposalMask      = 0x0C
         }
 
-
-        //------------------------------------------------------------------------------
-
         const uint   NoCode         = 0xFFFF;
         const ushort NoTransparency = 0xFFFF;
 
@@ -115,8 +104,8 @@ namespace MG.GIF
         int         D;
 
         // colour table
-        Color32[]   GlobalColourTable;
-        Color32[]   LocalColourTable;
+        readonly Color32[] GlobalColourTable;
+        readonly Color32[] LocalColourTable;
         Color32[]   ActiveColourTable;
         ushort      TransparentIndex;
 
@@ -131,9 +120,6 @@ namespace MG.GIF
         Color32[]   PreviousImage;
 
         readonly int[] Pow2 = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
-
-        //------------------------------------------------------------------------------
-        // ctor
 
         public Decoder( byte[] data )
             : this()
@@ -157,10 +143,6 @@ namespace MG.GIF
             return this;
         }
 
-
-        //------------------------------------------------------------------------------
-        // reading data utility functions
-
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
         byte ReadByte()
         {
@@ -173,8 +155,6 @@ namespace MG.GIF
             return (ushort) ( Input[ D++ ] | Input[ D++ ] << 8 );
         }
 
-        //------------------------------------------------------------------------------
-
         void ReadHeader()
         {
             if( Input == null || Input.Length <= 12 )
@@ -183,7 +163,6 @@ namespace MG.GIF
             }
 
             // signature
-
             Version = Encoding.ASCII.GetString( Input, 0, 6 );
             D = 6;
 
@@ -193,7 +172,6 @@ namespace MG.GIF
             }
 
             // read header
-
             Width  = ReadUInt16();
             Height = ReadUInt16();
 
@@ -213,19 +191,15 @@ namespace MG.GIF
             BackgroundColour = GlobalColourTable[ bgIndex ];
         }
 
-        //------------------------------------------------------------------------------
-
         public Image NextImage()
         {
             // if at start of data, read header
-
             if( D == 0 )
             {
                 ReadHeader();
             }
 
             // read blocks until we find an image block
-
             while( true )
             {
                 var block = (Block) ReadByte();
@@ -274,8 +248,6 @@ namespace MG.GIF
             }
         }
 
-        //------------------------------------------------------------------------------
-
         Color32[] ReadColourTable( Color32[] colourTable, ImageFlag flags )
         {
             var tableSize = Pow2[ (int)( flags & ImageFlag.TableSizeMask ) + 1 ];
@@ -293,8 +265,6 @@ namespace MG.GIF
             return colourTable;
         }
 
-        //------------------------------------------------------------------------------
-
         void SkipBlocks()
         {
             var blockSize = Input[ D++ ];
@@ -306,12 +276,9 @@ namespace MG.GIF
             }
         }
 
-        //------------------------------------------------------------------------------
-
         void ReadControlBlock()
         {
             // read block
-
             ReadByte();                             // block size (0x04)
             var flags = (ControlFlags) ReadByte();  // flags
             Image.Delay = ReadUInt16() * 10;        // delay (1/100th -> milliseconds)
@@ -320,7 +287,6 @@ namespace MG.GIF
             ReadByte();                             // terminator (0x00)
 
             // has transparent colour?
-
             if( flags.HasFlag( ControlFlags.HasTransparency ) )
             {
                 TransparentIndex = transparentColour;
@@ -360,8 +326,6 @@ namespace MG.GIF
                     break;
             }
         }
-
-        //------------------------------------------------------------------------------
 
         Image ReadImageBlock()
         {
@@ -414,9 +378,6 @@ namespace MG.GIF
             return Image;
         }
 
-        //------------------------------------------------------------------------------
-        // decode interlaced images
-
         void Deinterlace()
         {
             var numRows  = Output.Length / Width;
@@ -459,9 +420,6 @@ namespace MG.GIF
             }
         }
 
-        //------------------------------------------------------------------------------
-        // DecompressLZW()
-
 #if mgGIF_UNSAFE
 
         bool        Disposed = false;
@@ -480,7 +438,6 @@ namespace MG.GIF
         public Decoder()
         {
             // unmanaged allocations
-
             CodesLength = 128 * 1024;
             CodesHandle = Marshal.AllocHGlobal( CodesLength * sizeof( ushort ) );
             pCodes      = (ushort*) CodesHandle.ToPointer();
@@ -500,7 +457,6 @@ namespace MG.GIF
             }
 
             // release unmanaged resources
-
             Marshal.FreeHGlobal( CodesHandle );
             Marshal.FreeHGlobal( CurBlock );
             Marshal.FreeHGlobal( Indices );
@@ -807,7 +763,6 @@ namespace MG.GIF
 #else
 
         // dispose isn't needed for the safe implementation but keep here for interface parity
-
         public Decoder() { }
         public void Dispose() { Dispose( true ); }
         protected virtual void Dispose( bool disposing ) { }
