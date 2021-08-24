@@ -8,49 +8,10 @@ using System.Runtime.InteropServices; // unsafe
 
 namespace jd.boivin.unity.gif
 {
-    public class Image : ICloneable
-    {
-        public int       Width;
-        public int       Height;
-        public int       Delay; // milliseconds
-        public Color32[] RawImage;
-
-        public Image()
-        {
-        }
-
-        public Image( Image img )
-        {
-            Width    = img.Width;
-            Height   = img.Height;
-            Delay    = img.Delay;
-            RawImage = img.RawImage != null ? (Color32[]) img.RawImage.Clone() : null;
-        }
-
-        public object Clone()
-        {
-            return new Image( this );
-        }
-
-        public Texture2D CreateTexture()
-        {
-            var tex = new Texture2D( Width, Height, TextureFormat.ARGB32, false )
-            {
-                filterMode = FilterMode.Point,
-                wrapMode   = TextureWrapMode.Clamp
-            };
-
-            tex.SetPixels32( RawImage );
-            tex.Apply();
-
-            return tex;
-        }
-    }
-
 #if mgGIF_UNSAFE
     unsafe
 #endif
-    public class Decoder : IDisposable
+    public class GIFDecoder : IDisposable
     {
         public string  Version;
         public ushort  Width;
@@ -110,7 +71,7 @@ namespace jd.boivin.unity.gif
         ushort      TransparentIndex;
 
         // current image
-        Image       Image = new Image();
+        GIFImage    Image = new GIFImage();
         ushort      ImageLeft;
         ushort      ImageTop;
         ushort      ImageWidth;
@@ -121,13 +82,23 @@ namespace jd.boivin.unity.gif
 
         readonly int[] Pow2 = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
 
-        public Decoder( byte[] data )
+        public GIFDecoder( byte[] data )
             : this()
         {
             Load( data );
         }
 
-        public Decoder Load( byte[] data )
+        public void Clear()
+        {
+            Input = null;
+        }
+
+        public void Reset()
+        {
+            
+        }
+        
+        public GIFDecoder Load( byte[] data )
         {
             Input             = data;
             D                 = 0;
@@ -191,7 +162,7 @@ namespace jd.boivin.unity.gif
             BackgroundColour = GlobalColourTable[ bgIndex ];
         }
 
-        public Image NextImage()
+        public GIFImage NextImage()
         {
             // if at start of data, read header
             if( D == 0 )
@@ -209,7 +180,6 @@ namespace jd.boivin.unity.gif
                     case Block.Image:
                     {
                         // return the image if we got one
-
                         var img = ReadImageBlock();
 
                         if( img != null )
@@ -327,7 +297,7 @@ namespace jd.boivin.unity.gif
             }
         }
 
-        Image ReadImageBlock()
+        GIFImage ReadImageBlock()
         {
             // read image block header
 
@@ -435,7 +405,7 @@ namespace jd.boivin.unity.gif
         IntPtr      Indices;
         ushort**    pIndicies;
 
-        public Decoder()
+        public GIFDecoder()
         {
             // unmanaged allocations
             CodesLength = 128 * 1024;
@@ -464,7 +434,7 @@ namespace jd.boivin.unity.gif
             Disposed = true;
         }
 
-        ~Decoder()
+        ~GIFDecoder()
         {
             Dispose( false );
         }
