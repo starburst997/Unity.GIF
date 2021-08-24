@@ -40,5 +40,10 @@ namespace jd.boivin.unity.gif
 
             return tex;
         }
+
+        public void Dispose()
+        {
+            // TODO: Return `RawImage` to pool
+        }
     }
 }

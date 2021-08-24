@@ -445,6 +445,9 @@ namespace jd.boivin.unity.gif
             GC.SuppressFinalize( this );
         }
 
+        // This is the most heavy routine in the library
+        // In debug mode, this gets extremely slow for some reason?
+        // TODO: Find faster alternative eventually
         void DecompressLZW()
         {
             var pCodeBufferEnd = pCodes + CodesLength;
