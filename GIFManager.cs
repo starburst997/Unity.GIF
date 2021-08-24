@@ -9,15 +9,15 @@ namespace jd.boivin.unity.gif
 
         public static void Initialize()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 4; i++)
                 Decoders.Enqueue(new GIFDecoder());
         }
         
         public static void Clear()
         {
-            while (Decoders.TryDequeue(out _))
+            while (Decoders.TryDequeue(out var decoder))
             {
-                // Nothing here...
+                decoder.Dispose();
             }
         }
         
@@ -32,7 +32,7 @@ namespace jd.boivin.unity.gif
         {   
             if (Decoders.TryDequeue(out var decoder))
             {
-                decoder.Reset();   
+                decoder.Reset();
                 return decoder;
             }
             
