@@ -1,12 +1,19 @@
 ﻿using System.Collections.Concurrent;
+using UnityEngine;
 
 namespace jd.boivin.unity.gif
 {
     // Allow to recycle GIF instance
     public static class GIFManager
     {
-        private static readonly ConcurrentQueue<GIFDecoder> Decoders = new ConcurrentQueue<GIFDecoder>();
+        private static ConcurrentQueue<GIFDecoder> Decoders = new ConcurrentQueue<GIFDecoder>();
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void ResetStatic()
+        {
+            Decoders = new ConcurrentQueue<GIFDecoder>();
+        }
+        
         public static void Initialize()
         {
             for (var i = 0; i < 4; i++)
