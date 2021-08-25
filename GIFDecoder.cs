@@ -13,6 +13,23 @@ namespace jd.boivin.unity.gif
 #endif
     public class GIFDecoder : IDisposable
     {
+        public static bool IsGIF(byte[] bytes)
+        {
+            if (bytes == null)
+                return false;
+        
+            // Detect GIF
+            if (bytes.Length > 3 &&
+                bytes[0] == 0x47 &&
+                bytes[1] == 0x49 &&
+                bytes[2] == 0x46)
+            {
+                return true;
+            }
+        
+            return false;
+        }
+        
         public string  Version;
         public ushort  Width;
         public ushort  Height;
@@ -91,6 +108,8 @@ namespace jd.boivin.unity.gif
         public void Clear()
         {
             Input = null;
+            Output = null;
+            PreviousImage = null;
         }
 
         public void Reset()
