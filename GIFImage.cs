@@ -40,6 +40,20 @@ namespace jd.boivin.unity.gif
 
             return tex;
         }
+        
+        public Texture2D CreateTextureSmooth()
+        {
+            var tex = new Texture2D( Width, Height, TextureFormat.ARGB32, true )
+            {
+                filterMode = FilterMode.Trilinear,
+                wrapMode   = TextureWrapMode.Clamp
+            };
+
+            tex.SetPixels32( RawImage );
+            tex.Apply();
+
+            return tex;
+        }
 
         public void Dispose()
         {
