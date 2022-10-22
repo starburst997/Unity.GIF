@@ -114,7 +114,7 @@ namespace jd.boivin.unity.gif
 
         public void Reset()
         {
-            
+            D = 0;
         }
         
         public GIFDecoder Load( byte[] data )
