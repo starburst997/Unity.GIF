@@ -30,6 +30,7 @@ namespace jd.boivin.unity.gif
         
         public static void Return(GIFDecoder decoder)
         {
+            if (decoder == null) return;
             decoder.Clear();
             
             Decoders.Enqueue(decoder);
